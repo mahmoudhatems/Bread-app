@@ -30,7 +30,7 @@ class _HomePageState extends State<HomePage> {
   }
 
   String? selectedbreadsize;
-  int? selectedbreadweight;
+  String? selectedbreadweight;
   GlobalKey<FormState> formstate = GlobalKey();
   @override
   @override
@@ -95,94 +95,147 @@ class _HomePageState extends State<HomePage> {
                     child: Image.file(file!),
                   ),
                 ),
-
+                SizedBox(
+                  height: 80,
+                ),
               if (file != null)
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Container(
-                        color: KPrimaryColor,
-                        margin: EdgeInsets.symmetric(horizontal: 20),
-                        padding: EdgeInsets.all(20),
-                        child: DropdownButton(underline: Divider(thickness: 1,color: KSecondryColor,),
-                          iconEnabledColor: KSecondryColor,
-                          iconSize: 30,
-                          hint: Padding(
-                            padding: const EdgeInsets.all(2),
-                            child: Container(height:90,
-                              child: Padding(
-                                padding: const EdgeInsets.only(bottom:0),
-                                child: Text(
-                                  "Choose Size",
-                                  style: TextStyle(
-                                    color: KSecondryColor,
-                                    fontSize: 22,
+                Container(  height: 85,
+                  width: 315,
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(8),
+                      border: Border.all(color: KSecondryColor)),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      Text(
+                        'Choose Size :',
+                        style: TextStyle(
+                          color: KSecondryColor,
+                          fontSize: 18,
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Container(
+                          color: KPrimaryColor,
+                          
+                         
+                          child: DropdownButton(
+                            underline: Divider(
+                              thickness: 1,
+                              color: KSecondryColor,
+                            ),
+                            iconEnabledColor: KSecondryColor,
+                            iconSize: 30,
+                            hint: Padding(
+                              padding: const EdgeInsets.all(2),
+                              child: Container(
+                                height: 90,
+                                child: Padding(
+                                  padding: const EdgeInsets.only(bottom: 0),
+                                  child: Text(
+                                    "Choose Size",
+                                    style: TextStyle(
+                                      color: KSecondryColor,
+                                      fontSize: 18,
+                                    ),
                                   ),
                                 ),
                               ),
                             ),
+                            style: TextStyle(color: KSecondryColor),
+                            dropdownColor: KPrimaryColor,
+                            borderRadius: BorderRadius.circular(16),
+                            items: ["Small", "Medium", "Large"]
+                                .map((e) => DropdownMenuItem(
+                                      child: Text(
+                                        "$e",
+                                        style: TextStyle(fontSize: 20),
+                                      ),
+                                      value: e,
+                                    ))
+                                .toList(),
+                            onChanged: (val) {
+                              setState(() {
+                                selectedbreadsize = val;
+                              });
+                            },
+                            value: selectedbreadsize,
                           ),
-                          style: TextStyle(color: KSecondryColor),
-                          dropdownColor: KPrimaryColor,
-                          borderRadius: BorderRadius.circular(16),
-                          items: ["Small", "Medium", "Large"]
-                              .map((e) => DropdownMenuItem(
-                                    child: Text(
-                                      "$e",
-                                      style: TextStyle(fontSize: 20),
-                                    ),
-                                    value: e,
-                                  ))
-                              .toList(),
-                          onChanged: (val) {
-                            setState(() {
-                              selectedbreadsize = val;
-                            });
-                          },
-                          value: selectedbreadsize,
                         ),
                       ),
-                    ),
-                  ],
-                ),  if (file != null)
-      SizedBox(height: 80,),
-              Container(
-                width: 158,
-                height: 30,
-                child: TextFormField(cursorColor: KSecondryColor,
-                  decoration: InputDecoration(
-                    focusColor: KSecondryColor,hoverColor: KSecondryColor,
-
-                      fillColor: KSecondryColor,
-                      hintText: '   Weight    ',
-                      hintStyle:
-                          TextStyle(fontSize: 16, color: KSecondryColor)),
-                  keyboardType: TextInputType.number,
-                  validator: (value) {
-                    if (value!.isEmpty) {
-                      return "    Is Empty    ";
-                    }
-                    if (value.length > 4) {
-                      return "    The weight cannot be large    ";
-                    }
-                  },
+                    ],
+                  ),
                 ),
-              ),SizedBox(height: 80,),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: CustomButtom(
-                  text: "Next",
-                  onTap: () {
-                    if (formstate.currentState!.validate()) {
-                      print('valid');
-                    } else {
-                      print('not valid');
-                    }
-                  },
+              if (file != null)
+                SizedBox(
+                  height: 80,
                 ),
+              if (file != null)
+                Container(
+                  height: 85,
+                  width: 315,
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(8),
+                      border: Border.all(color: KSecondryColor)),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      Text(
+                        'Enter Weight : ',
+                        style: TextStyle(
+                          color: KSecondryColor,
+                          fontSize: 18,
+                        ),
+                      ),
+                      Container(
+                        width: 158,
+                        height: 30,
+                        child: TextFormField(
+                          textAlign: TextAlign.center,
+                          onSaved: (val) {
+                            selectedbreadweight = val;
+                          },
+                          cursorColor: KSecondryColor,
+                          decoration: InputDecoration(
+                              focusColor: KSecondryColor,
+                              hoverColor: KSecondryColor,
+                              fillColor: KSecondryColor,
+                              hintText: '   Weight    ',
+                              hintStyle: TextStyle(
+                                  fontSize: 18, color: KSecondryColor)),
+                          keyboardType: TextInputType.number,
+                          validator: (value) {
+                            if (value!.isEmpty) {
+                              return "    Is Empty    ";
+                            }
+                            if (value.length > 4) {
+                              return "    The weight cannot be large    ";
+                            }
+                          },
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              SizedBox(
+                height: 80,
               ),
+              if (file != null && selectedbreadsize != null )
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: CustomButtom(
+                    text: "Send",
+                    onTap: () {
+                      if (formstate.currentState!.validate()) {
+                        formstate.currentState!.save();
+                        print('valid');
+                      } else {
+                        print('not valid');
+                      }
+                    },
+                  ),
+                ),
             ],
           ),
         ),
