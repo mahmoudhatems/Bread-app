@@ -45,7 +45,7 @@ class _SignUpState extends State<SignUp> {
           ),
           Padding(
             padding: const EdgeInsets.all(8.0),
-            child: CustomTextField(
+            child: CustomTextField( obscureText: true,
               hintText: "Password",
               mycontroller: password,
             ),
