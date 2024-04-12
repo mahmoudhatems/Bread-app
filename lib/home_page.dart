@@ -6,6 +6,7 @@ import 'package:breadapp/widgets/custom_text_field.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:lottie/lottie.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -14,7 +15,47 @@ class HomePage extends StatefulWidget {
   State<HomePage> createState() => _HomePageState();
 }
 
-class _HomePageState extends State<HomePage> {
+class _HomePageState extends State<HomePage>
+    with SingleTickerProviderStateMixin {
+  late AnimationController controller;
+  @override
+  void initState() {
+    super.initState();
+    controller = AnimationController(
+     
+      vsync: this,);
+      controller.addStatusListener((status) async {
+        if(status==AnimationStatus.completed){
+          Navigator.pop(context);
+          controller.reset();
+        }
+      });
+    
+  }
+  @override
+
+  void dispose() {
+    controller.dispose();
+    super.dispose();
+  }
+
+  void showDoneDialog() => showDialog(
+      barrierDismissible: false,
+      context: context,
+      builder: (context) => Dialog(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Lottie.asset('animations/success.json',
+                    animate: true, repeat: false, controller: controller,
+                    onLoaded: (composition){
+                      controller.duration=composition.duration;
+                      controller.forward();
+                    }),
+              ],
+            ),
+          ));
+
   File? file;
   getImage() async {
     final ImagePicker picker = ImagePicker();
@@ -29,7 +70,7 @@ class _HomePageState extends State<HomePage> {
     setState(() {});
   }
 
-  String? selectedbreadsize;
+  String? selectedbreadquality;
   String? selectedbreadweight;
   GlobalKey<FormState> formstate = GlobalKey();
   @override
@@ -95,11 +136,12 @@ class _HomePageState extends State<HomePage> {
                     child: Image.file(file!),
                   ),
                 ),
-                SizedBox(
-                  height: 80,
-                ),
+              SizedBox(
+                height: 80,
+              ),
               if (file != null)
-                Container(  height: 85,
+                Container(
+                  height: 85,
                   width: 315,
                   decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(8),
@@ -108,7 +150,7 @@ class _HomePageState extends State<HomePage> {
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
                       Text(
-                        'Choose Size :',
+                        'Choose Quality :',
                         style: TextStyle(
                           color: KSecondryColor,
                           fontSize: 18,
@@ -118,8 +160,6 @@ class _HomePageState extends State<HomePage> {
                         padding: const EdgeInsets.all(8.0),
                         child: Container(
                           color: KPrimaryColor,
-                          
-                         
                           child: DropdownButton(
                             underline: Divider(
                               thickness: 1,
@@ -134,10 +174,10 @@ class _HomePageState extends State<HomePage> {
                                 child: Padding(
                                   padding: const EdgeInsets.only(bottom: 0),
                                   child: Text(
-                                    "Choose Size",
+                                    "Choose Quality",
                                     style: TextStyle(
                                       color: KSecondryColor,
-                                      fontSize: 18,
+                                      fontSize: 15,
                                     ),
                                   ),
                                 ),
@@ -146,7 +186,7 @@ class _HomePageState extends State<HomePage> {
                             style: TextStyle(color: KSecondryColor),
                             dropdownColor: KPrimaryColor,
                             borderRadius: BorderRadius.circular(16),
-                            items: ["Small", "Medium", "Large"]
+                            items: ["Average", "Good", "Bad",]
                                 .map((e) => DropdownMenuItem(
                                       child: Text(
                                         "$e",
@@ -157,10 +197,10 @@ class _HomePageState extends State<HomePage> {
                                 .toList(),
                             onChanged: (val) {
                               setState(() {
-                                selectedbreadsize = val;
+                                selectedbreadquality = val;
                               });
                             },
-                            value: selectedbreadsize,
+                            value: selectedbreadquality,
                           ),
                         ),
                       ),
@@ -221,7 +261,7 @@ class _HomePageState extends State<HomePage> {
               SizedBox(
                 height: 80,
               ),
-              if (file != null && selectedbreadsize != null )
+              if (file != null && selectedbreadquality != null)
                 Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: CustomButtom(
@@ -229,6 +269,7 @@ class _HomePageState extends State<HomePage> {
                     onTap: () {
                       if (formstate.currentState!.validate()) {
                         formstate.currentState!.save();
+                        showDoneDialog();
                         print('valid');
                       } else {
                         print('not valid');
