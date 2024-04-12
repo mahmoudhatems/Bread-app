@@ -40,6 +40,7 @@ FirebaseAuth.instance
         "LoginPage":(context)=>LoginPage(),
        "SignUp":(context)=>SignUp(),
         "HomePage":(context)=>HomePage(),
+        "DetailsPage":(context)=>DetailsPage(),
       },
       home:FirebaseAuth.instance.currentUser==null?LoginPage():  HomePage(),
     );
