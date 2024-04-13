@@ -1,9 +1,12 @@
+import 'dart:ffi';
 import 'dart:io';
-
 import 'package:breadapp/constants.dart';
 import 'package:breadapp/widgets/custom_buttom.dart';
 import 'package:breadapp/widgets/custom_text_field.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:lottie/lottie.dart';
@@ -17,6 +20,7 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage>
     with SingleTickerProviderStateMixin {
+
   late AnimationController controller;
   @override
   void initState() {
@@ -56,6 +60,34 @@ class _HomePageState extends State<HomePage>
             ),
           ));
 
+final storageRef = FirebaseStorage.instance.ref();
+// upload data function 
+Future<void> uploadData() async {
+  if (file == null || selectedbreadquality == null || selectedbreadweight == null) return;
+
+  final String userId = FirebaseAuth.instance.currentUser!.uid;
+  final String imageFileName = DateTime.now().millisecondsSinceEpoch.toString();
+  final Reference storageRef = FirebaseStorage.instance.ref().child('images/$imageFileName.jpg');
+
+  // Compress image if necessary
+  // final compressedFile = await compressImage(file!);
+
+  final imageUrlFuture = storageRef.putFile(file!).then((snapshot) => snapshot.ref.getDownloadURL());
+
+  final imageUrl = await imageUrlFuture;
+
+  await FirebaseFirestore.instance.collection('bread_data').doc().set({
+    'userId': userId,
+    'imageUrl': imageUrl,
+    'breadQuality': selectedbreadquality,
+    'breadWeight': selectedbreadweight,
+    'timestamp': FieldValue.serverTimestamp(),
+  });
+
+  showDoneDialog();
+}
+
+
   File? file;
   getImage() async {
     final ImagePicker picker = ImagePicker();
@@ -66,6 +98,8 @@ class _HomePageState extends State<HomePage>
         await picker.pickImage(source: ImageSource.camera);
     if (imageCamera != null) {
       file = File(imageCamera.path);
+     var refStorage= FirebaseStorage.instance.ref("");
+     
     }
     setState(() {});
   }
@@ -85,7 +119,7 @@ class _HomePageState extends State<HomePage>
               Navigator.of(context)
                   .pushNamedAndRemoveUntil("LoginPage", (route) => false);
             },
-            icon: Icon(Icons.exit_to_app_outlined))
+            icon: const Icon(Icons.exit_to_app_outlined))
       ]),
       body: SingleChildScrollView(
         child: Form(
@@ -107,7 +141,7 @@ class _HomePageState extends State<HomePage>
                       ),
                       child: IconButton(
                         highlightColor: KPrimaryColorDark,
-                        padding: EdgeInsets.all(32),
+                        padding: const EdgeInsets.all(32),
                         onPressed: () async {
                           await getImage();
                         },
@@ -136,7 +170,7 @@ class _HomePageState extends State<HomePage>
                     child: Image.file(file!),
                   ),
                 ),
-              SizedBox(
+              const SizedBox(
                 height: 80,
               ),
               if (file != null)
@@ -149,7 +183,7 @@ class _HomePageState extends State<HomePage>
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
-                      Text(
+                      const Text(
                         'Choose Quality :',
                         style: TextStyle(
                           color: KSecondryColor,
@@ -161,18 +195,18 @@ class _HomePageState extends State<HomePage>
                         child: Container(
                           color: KPrimaryColor,
                           child: DropdownButton(
-                            underline: Divider(
+                            underline: const Divider(
                               thickness: 1,
                               color: KSecondryColor,
                             ),
                             iconEnabledColor: KSecondryColor,
                             iconSize: 30,
-                            hint: Padding(
-                              padding: const EdgeInsets.all(2),
-                              child: Container(
+                            hint: const Padding(
+                              padding: EdgeInsets.all(2),
+                              child: SizedBox(
                                 height: 90,
                                 child: Padding(
-                                  padding: const EdgeInsets.only(bottom: 0),
+                                  padding: EdgeInsets.only(bottom: 0),
                                   child: Text(
                                     "Choose Quality",
                                     style: TextStyle(
@@ -183,16 +217,16 @@ class _HomePageState extends State<HomePage>
                                 ),
                               ),
                             ),
-                            style: TextStyle(color: KSecondryColor),
+                            style: const TextStyle(color: KSecondryColor),
                             dropdownColor: KPrimaryColor,
                             borderRadius: BorderRadius.circular(16),
                             items: ["Average", "Good", "Bad",]
                                 .map((e) => DropdownMenuItem(
-                                      child: Text(
-                                        "$e",
-                                        style: TextStyle(fontSize: 20),
-                                      ),
                                       value: e,
+                                      child: Text(
+                                        e,
+                                        style: const TextStyle(fontSize: 20),
+                                      ),
                                     ))
                                 .toList(),
                             onChanged: (val) {
@@ -208,7 +242,7 @@ class _HomePageState extends State<HomePage>
                   ),
                 ),
               if (file != null)
-                SizedBox(
+                const SizedBox(
                   height: 80,
                 ),
               if (file != null)
@@ -221,7 +255,7 @@ class _HomePageState extends State<HomePage>
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
-                      Text(
+                      const Text(
                         'Enter Weight : ',
                         style: TextStyle(
                           color: KSecondryColor,
@@ -237,7 +271,7 @@ class _HomePageState extends State<HomePage>
                             selectedbreadweight = val;
                           },
                           cursorColor: KSecondryColor,
-                          decoration: InputDecoration(
+                          decoration: const InputDecoration(
                               focusColor: KSecondryColor,
                               hoverColor: KSecondryColor,
                               fillColor: KSecondryColor,
@@ -258,7 +292,7 @@ class _HomePageState extends State<HomePage>
                     ],
                   ),
                 ),
-              SizedBox(
+              const SizedBox(
                 height: 80,
               ),
               if (file != null && selectedbreadquality != null)
@@ -269,7 +303,7 @@ class _HomePageState extends State<HomePage>
                     onTap: () {
                       if (formstate.currentState!.validate()) {
                         formstate.currentState!.save();
-                        showDoneDialog();
+                        uploadData();
                         print('valid');
                       } else {
                         print('not valid');
