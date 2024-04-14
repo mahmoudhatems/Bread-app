@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "151543705562",
+    "project_id": "bread-app-5ca08",
+    "storage_bucket": "bread-app-5ca08.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:151543705562:android:35e13a041ec60f4a955ae3",
+        "android_client_info": {
+          "package_name": "com.example.breadapp"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCjMUq_fpGZEeTu8MpOEGSWD-D_EDrakUs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
