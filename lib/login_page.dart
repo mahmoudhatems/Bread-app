@@ -1,12 +1,13 @@
+// ignore_for_file: sized_box_for_whitespace
+
 import 'package:breadapp/constants.dart';
-import 'package:breadapp/sign_up_page.dart';
 import 'package:breadapp/widgets/custom_buttom.dart';
 import 'package:breadapp/widgets/custom_text_field.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class LoginPage extends StatefulWidget {
-  LoginPage({super.key});
+  const LoginPage({super.key});
 
   @override
   State<LoginPage> createState() => _LoginPageState();
@@ -53,13 +54,20 @@ class _LoginPageState extends State<LoginPage> {
               hintText: "Password",
             ),
           ),
-          CustomButtom(
+          CustomButton(
             text: "Sign In",
             onTap: () async {
               try {
+                showDialog(context: context, 
+                builder: (context){
+                  return const Center(child:  CircularProgressIndicator(),);
+                }
+                
+                );
                 final credential = await FirebaseAuth.instance
                     .signInWithEmailAndPassword(
-                        email: email.text, password: password.text);
+                        email: email.text.trim(), password: password.text.trim());
+                        Navigator.of(context).pop();
                 Navigator.of(context).pushReplacementNamed('HomePage');
               } on FirebaseAuthException catch (e) {
                 if (e.code == 'user-not-found') {
