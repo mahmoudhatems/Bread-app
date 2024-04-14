@@ -1,3 +1,5 @@
+// ignore_for_file: prefer_const_constructors
+
 import 'package:breadapp/widgets/custom_text_field.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -5,7 +7,7 @@ import 'constants.dart';
 import 'widgets/custom_buttom.dart';
 
 class SignUp extends StatefulWidget {
-  SignUp({super.key});
+  const SignUp({super.key});
 
   @override
   State<SignUp> createState() => _SignUpState();
@@ -50,16 +52,24 @@ class _SignUpState extends State<SignUp> {
               mycontroller: password,
             ),
           ),
-          CustomButtom(
+          CustomButton(
             onTap: () async {
+               showDialog(context: context, 
+                builder: (context){
+                  return Center(child: CircularProgressIndicator(),);
+                }
+                
+                );
               try {
                 final credential =
                     await FirebaseAuth.instance.createUserWithEmailAndPassword(
-                  email: email.text,
-                  password: password.text,
-                );
+                  email: email.text.trim(),
+                  password: password.text.trim(),
+                );Navigator.of(context).pop();
                 Navigator.pushReplacementNamed(context, "HomePage");
               } on FirebaseAuthException catch (e) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(showCloseIcon: true, content: Text(e.toString())));
                 if (e.code == 'weak-password') {
                   print('The password provided is too weak.');
                 } else if (e.code == 'email-already-in-use') {

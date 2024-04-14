@@ -1,48 +1,35 @@
-import 'package:breadapp/details_page.dart';
 import 'package:breadapp/firebase_options.dart';
 import 'package:breadapp/home_page.dart';
 import 'package:breadapp/login_page.dart';
 import 'package:breadapp/sign_up_page.dart';
+import 'package:breadapp/widgets/dependency_injection.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get_navigation/src/root/get_material_app.dart';
 
-void main() async { WidgetsFlutterBinding.ensureInitialized();
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
   runApp(const MyApp());
-}
-class MyApp extends StatefulWidget {
-  const MyApp({super.key});
-
-  @override
-  State<MyApp> createState() => _MyAppState();
+  DependencyInjection.init();
 }
 
-class _MyAppState extends State<MyApp> {
-  @override
-  void initState() {
-FirebaseAuth.instance
-  .authStateChanges()
-  .listen((User? user) {
-    if (user == null) {
-      print('User is currently signed out!');
-    } else {
-      print('User is signed in!');
-    }
-  });    super.initState();
-  }
+class MyApp extends StatelessWidget {
+  const MyApp({Key? key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return GetMaterialApp(
+      debugShowCheckedModeBanner: true,
+      initialRoute: FirebaseAuth.instance.currentUser == null ? "LoginPage" : "HomePage",
       routes: {
-        "LoginPage":(context)=>LoginPage(),
-       "SignUp":(context)=>SignUp(),
-        "HomePage":(context)=>HomePage(),
-        "DetailsPage":(context)=>DetailsPage(),
+        "LoginPage": (context) => LoginPage(),
+        "SignUp": (context) => SignUp(),
+        "HomePage": (context) => HomePage(),
       },
-      home:FirebaseAuth.instance.currentUser==null?LoginPage():  HomePage(),
     );
   }
 }
