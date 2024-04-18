@@ -23,12 +23,12 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GetMaterialApp(
-      debugShowCheckedModeBanner: true,
+      debugShowCheckedModeBanner: false,
       initialRoute: FirebaseAuth.instance.currentUser == null ? "LoginPage" : "HomePage",
       routes: {
-        "LoginPage": (context) => LoginPage(),
-        "SignUp": (context) => SignUp(),
-        "HomePage": (context) => HomePage(),
+        "LoginPage": (context) => const LoginPage(),
+        "SignUp": (context) => const SignUp(),
+        "HomePage": (context) => const HomePage(),
       },
     );
   }

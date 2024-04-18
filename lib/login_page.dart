@@ -32,7 +32,7 @@ class _LoginPageState extends State<LoginPage> {
             padding: const EdgeInsets.all(8.0),
             child: Container(
                 height: 240,
-                child: Image.asset('images/simple bread logo.png')),
+                child: Image.asset('images/icon.png')),
           ),
           const Text("Sign In",
               style: TextStyle(color: Colors.black, fontSize: 32),
@@ -71,12 +71,12 @@ class _LoginPageState extends State<LoginPage> {
                 Navigator.of(context).pushReplacementNamed('HomePage');
               } on FirebaseAuthException catch (e) {
                 if (e.code == 'user-not-found') {
-                  print('No user found for that email.');
+                 // print('No user found for that email.');
                   ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                       content: Text(e
                           .toString()))); // That's it to display an alert, use other properties to customize.
                 } else if (e.code == 'wrong-password') {
-                  print('Wrong password provided for that user.');
+                 // print('Wrong password provided for that user.');
                   ScaffoldMessenger.of(context)
                       .showSnackBar(SnackBar(content: Text(e.toString())));
                 }

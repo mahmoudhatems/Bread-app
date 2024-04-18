@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 
 class CustomTextField extends StatelessWidget {
-   CustomTextField({super.key, this.hintText,this.obscureText=false, required this.mycontroller});
-String? hintText;
-bool obscureText;
+   const CustomTextField({super.key, this.hintText,this.obscureText=false, required this.mycontroller});
+final String? hintText;
+final bool obscureText;
 final TextEditingController mycontroller;
   @override
   Widget build(BuildContext context) {
@@ -14,15 +14,15 @@ final TextEditingController mycontroller;
         controller: mycontroller,
             decoration: InputDecoration(
               hintText:hintText ,
-              hintStyle: TextStyle(
+              hintStyle: const TextStyle(
                 color:  Colors.black54
               ),
                 enabledBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(16),
-                    borderSide: BorderSide(color: Colors.black)),
+                    borderSide: const BorderSide(color: Colors.black)),
                 border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(20),
-                    borderSide: BorderSide(color: Colors.black))),
+                    borderSide: const BorderSide(color: Colors.black))),
           ),
     );
   }

@@ -1,11 +1,8 @@
-import 'dart:ffi';
 import 'dart:io';
 import 'package:breadapp/constants.dart';
 import 'package:breadapp/widgets/custom_buttom.dart';
-import 'package:breadapp/widgets/custom_text_field.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
@@ -42,23 +39,37 @@ class _HomePageState extends State<HomePage>
     super.dispose();
   }
 
-  void showDoneDialog() => showDialog(
-      barrierDismissible: false,
-      context: context,
-      builder: (context) => Dialog(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Lottie.asset('animations/success.json',
+  void showDoneDialog(BuildContext context) => showDialog(
+        barrierDismissible: false,
+        context: context,
+        builder: (BuildContext dialogContext) => Dialog(
+          child: SingleChildScrollView(
+            child: Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Lottie.asset(
+                    'animations/success.json',
                     animate: true,
                     repeat: false,
-                    controller: controller, onLoaded: (composition) {
-                  controller.duration = composition.duration;
-                  controller.forward();
-                }),
-              ],
+                    controller: controller,
+                    onLoaded: (composition) {
+                      controller.duration = composition.duration;
+                      controller.forward();
+                    },
+                  ),
+                ],
+              ),
             ),
-          ));
+          ),
+        ),
+      );
+
+// Caller function
+  void onButtonPressed() {
+    showDoneDialog(context);
+  }
 
   final storageRef = FirebaseStorage.instance.ref();
 // upload data function
@@ -92,9 +103,12 @@ class _HomePageState extends State<HomePage>
         'timestamp': FieldValue.serverTimestamp(),
       });
 
-      showDoneDialog();
+      showDoneDialog(context);
     } catch (e) {
-      print('Error uploading data: $e');
+      // ignore: use_build_context_synchronously
+      ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(showCloseIcon: true, content: Text(e.toString())));
+      //print('Error uploading data: $e');
     } finally {
       isLoading = false;
       selectedbreadquality == null;
@@ -113,7 +127,7 @@ class _HomePageState extends State<HomePage>
         await picker.pickImage(source: ImageSource.camera);
     if (imageCamera != null) {
       file = File(imageCamera.path);
-      var refStorage = FirebaseStorage.instance.ref("");
+      // var refStorage = FirebaseStorage.instance.ref("");
     }
     setState(() {});
   }
@@ -126,16 +140,15 @@ class _HomePageState extends State<HomePage>
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: KPrimaryColor,
-      appBar: AppBar(backgroundColor: KPrimaryColor, actions: [
-      
-       IconButton(
-           onPressed: () async {
+      /* appBar: AppBar(backgroundColor: KPrimaryColor, actions: [
+        IconButton(
+            onPressed: () async {
               await FirebaseAuth.instance.signOut();
               Navigator.of(context)
                   .pushNamedAndRemoveUntil("LoginPage", (route) => false);
             },
             icon: const Icon(Icons.exit_to_app_outlined))
-     ]),
+      ]),*/
       body: isLoading == true
           ? const Column(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -161,29 +174,34 @@ class _HomePageState extends State<HomePage>
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Padding(
-                          padding: const EdgeInsets.all(12),
-                          child: Container(
-                            decoration: BoxDecoration(
-                              border: Border.all(
-                                color: KSecondryColor,
-                                width: 2,
+                        Column(
+                          children: [
+                            const SizedBox(height: 68),
+                            Padding(
+                              padding: const EdgeInsets.all(12),
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  border: Border.all(
+                                    color: KSecondryColor,
+                                    width: 2,
+                                  ),
+                                  shape: BoxShape.circle,
+                                ),
+                                child: IconButton(
+                                  highlightColor: KPrimaryColorDark,
+                                  padding: const EdgeInsets.all(32),
+                                  onPressed: () async {
+                                    await getImage();
+                                  },
+                                  icon: const Icon(
+                                    Icons.camera_alt_outlined,
+                                    size: 80,
+                                    color: KSecondryColor,
+                                  ),
+                                ),
                               ),
-                              shape: BoxShape.circle,
                             ),
-                            child: IconButton(
-                              highlightColor: KPrimaryColorDark,
-                              padding: const EdgeInsets.all(32),
-                              onPressed: () async {
-                                await getImage();
-                              },
-                              icon: const Icon(
-                                Icons.camera_alt_outlined,
-                                size: 80,
-                                color: KSecondryColor,
-                              ),
-                            ),
-                          ),
+                          ],
                         ),
                       ],
                     ),
@@ -299,7 +317,7 @@ class _HomePageState extends State<HomePage>
                             const Text(
                               'Enter Weight',
                               style: TextStyle(
-                                 fontWeight: FontWeight.w700,
+                                fontWeight: FontWeight.w700,
                                 color: KSecondryColor,
                                 fontSize: 18,
                               ),
@@ -322,13 +340,14 @@ class _HomePageState extends State<HomePage>
                                         fontSize: 18, color: KSecondryColor)),
                                 keyboardType: TextInputType.number,
                                 validator: (value) {
-                                  if (value!.isEmpty) {value=null;
+                                  if (value!.isEmpty) {
+                                    value = null;
                                     return "    Is Empty    ";
-                                    
                                   }
                                   if (value.length > 4) {
                                     return "Enter a Valid Number";
                                   }
+                                  return null;
                                 },
                               ),
                             ),
@@ -342,15 +361,22 @@ class _HomePageState extends State<HomePage>
                       Padding(
                         padding: const EdgeInsets.all(8.0),
                         child: CustomButton(
-                          
                           text: "Send",
                           onTap: () {
                             if (formstate.currentState!.validate()) {
                               formstate.currentState!.save();
                               uploadData();
-                              print('valid');
+                              // print('valid');
                             } else {
-                              print('not valid');
+                              ScaffoldMessenger.of(context)
+                                  .showSnackBar(const SnackBar(
+                                      backgroundColor: Colors.redAccent,
+                                      showCloseIcon: true,
+                                      content: Text(
+                                        "Cannot send data",
+                                        style: TextStyle(color: Colors.black),
+                                      )));
+                                       // print('invalid');
                             }
                           },
                         ),

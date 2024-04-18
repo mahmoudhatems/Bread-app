@@ -15,7 +15,7 @@ class CustomButton extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
       child: ElevatedButton(
         style: ButtonStyle(
-          side: MaterialStateProperty.all(BorderSide(width: 0.5)),
+          side: MaterialStateProperty.all(const BorderSide(width: 0.5)),
           padding: MaterialStateProperty.all(EdgeInsets.all(screenWidth * 0.02)),
           backgroundColor: MaterialStateProperty.all(KSecondryColor),
           overlayColor: MaterialStateProperty.all(KSecondryColorlight),

@@ -1,4 +1,3 @@
-// ignore_for_file: prefer_const_constructors
 
 import 'package:breadapp/widgets/custom_text_field.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -23,19 +22,19 @@ class _SignUpState extends State<SignUp> {
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 10),
         child: ListView(children: [
-          SizedBox(
+          const SizedBox(
             height: 18,
           ),
           Padding(
             padding: const EdgeInsets.all(8.0),
-            child: Container(
+            child: SizedBox(
                 height: 240,
-                child: Image.asset('images/simple bread logo.png')),
+                child: Image.asset('images/icon.png')),
           ),
-          Text("Sign Up",
+          const Text("Sign Up",
               style: TextStyle(color: Colors.black, fontSize: 32),
               textAlign: TextAlign.center),
-          SizedBox(
+          const SizedBox(
             height: 20,
           ),
           Padding(
@@ -56,7 +55,7 @@ class _SignUpState extends State<SignUp> {
             onTap: () async {
                showDialog(context: context, 
                 builder: (context){
-                  return Center(child: CircularProgressIndicator(),);
+                  return const Center(child: CircularProgressIndicator(),);
                 }
                 
                 );
@@ -71,21 +70,21 @@ class _SignUpState extends State<SignUp> {
                 ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(showCloseIcon: true, content: Text(e.toString())));
                 if (e.code == 'weak-password') {
-                  print('The password provided is too weak.');
+                  const Text('The password provided is too weak.');
                 } else if (e.code == 'email-already-in-use') {
-                  print('The account already exists for that email.');
+                  const Text('The account already exists for that email.');
                 }
               } catch (e) {
                 ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(showCloseIcon: true, content: Text(e.toString())));
-                print(e);
+               // print(e);
               }
             },
             text: "Sign Up",
           ),
           Row(
             children: [
-              Text(
+              const Text(
                 " Already have an account ?  ",
                 style: TextStyle(color: Colors.black87),
               ),
@@ -93,7 +92,7 @@ class _SignUpState extends State<SignUp> {
                 onTap: () {
                   Navigator.of(context).pushNamed("LoginPage");
                 },
-                child: Text(
+                child: const Text(
                   'Sign In ',
                   style: TextStyle(color: KSecondryColor),
                 ),
